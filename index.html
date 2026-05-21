@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#075E54">
+<title>InterNOVA · F2 Resultados · WhatsApp Flow</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+:root{
+  --g1:#064E47;--g2:#075E54;--g3:#128C7E;
+  --wa:#25D366;--wam:#DCF8C6;
+  --chat:#E5DDD5;--f:'Plus Jakarta Sans',sans-serif;--m:'JetBrains Mono',monospace;
+  --waflow:#008069;--wabtn:#00A884;--wabg:#F0F2F5;--watxt:#111B21;--wasub:#667781;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:#0a0a0a;font-family:var(--f)}
+
+#intro{position:fixed;inset:0;z-index:100;background:linear-gradient(160deg,#021a17,#053d36 45%,#064E47);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;transition:opacity .5s;overflow-y:auto}
+#intro.hide{opacity:0;pointer-events:none}
+.il{width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,#075E54,#25D366);display:flex;align-items:center;justify-content:center;font-size:30px;margin-bottom:14px;box-shadow:0 0 0 1px rgba(37,211,102,.25),0 8px 40px rgba(37,211,102,.25)}
+.ibr{color:rgba(255,255,255,.4);font-size:10px;letter-spacing:5px;text-transform:uppercase;margin-bottom:6px;font-weight:700}
+.itr{color:#fff;font-size:26px;font-weight:800;letter-spacing:-1px;text-align:center;margin-bottom:4px}
+.isu{color:rgba(255,255,255,.5);font-size:11px;text-align:center;margin-bottom:18px;line-height:1.5;max-width:380px}
+.startbtn{background:var(--wa);color:#fff;border:none;border-radius:14px;padding:14px 28px;font-size:14px;font-weight:800;cursor:pointer;font-family:var(--f);box-shadow:0 6px 24px rgba(37,211,102,.35);transition:transform .15s;-webkit-appearance:none;appearance:none;touch-action:manipulation;min-width:240px}
+.startbtn:active{transform:scale(.97)}
+.featrow{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;max-width:400px;margin-bottom:20px}
+.featcd{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px 11px;display:flex;align-items:flex-start;gap:7px}
+.featico{font-size:14px;flex-shrink:0;margin-top:1px}
+.feattx{font-size:10px;color:rgba(255,255,255,.65);font-weight:500;line-height:1.35}
+.featlbl{font-size:9px;color:var(--wa);font-weight:700;display:block;margin-top:2px}
+.icr{margin-top:14px;text-align:center}
+.icr-n{color:rgba(255,255,255,.65);font-size:11px;font-weight:700}
+.icr-r{color:rgba(255,255,255,.3);font-size:9px;margin-top:2px}
+.icr-t{color:var(--wa);font-size:9px;font-weight:700;margin-top:2px;letter-spacing:.5px}
+
+#main{display:none;flex-direction:column}
+#main.show{display:flex}
+.topbar{background:var(--g2);flex-shrink:0}
+.tb1{display:flex;align-items:center;gap:8px;padding:8px 12px}
+.tbback{background:rgba(255,255,255,.1);border:none;color:#fff;font-size:16px;width:28px;height:28px;border-radius:50%;cursor:pointer}
+.av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#128C7E,#25D366);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0}
+.tbn{color:#fff;font-size:13px;font-weight:700}
+.tbs{color:rgba(255,255,255,.55);font-size:9px;margin-top:1px}
+.tbbg{margin-left:auto;background:rgba(37,211,102,.2);border:1px solid rgba(37,211,102,.35);border-radius:6px;padding:3px 8px;color:#4ADE80;font-size:8px;font-weight:800;letter-spacing:.5px;flex-shrink:0}
+.ctx{background:rgba(0,0,0,.22);padding:4px 12px;display:flex;align-items:center;gap:5px}
+.ctxd{width:5px;height:5px;border-radius:50%;background:#4ADE80;animation:pu 2s infinite;flex-shrink:0}
+@keyframes pu{0%,100%{opacity:1}50%{opacity:.2}}
+.ctxl{font-size:8px;color:rgba(255,255,255,.3);font-weight:700;letter-spacing:.5px}
+.ctxv{font-size:9px;color:#4ADE80;font-weight:700;margin-left:auto;max-width:75%;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:var(--m)}
+
+.chat{flex:1;min-height:0;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:5px;background:var(--chat);-webkit-overflow-scrolling:touch}
+.dp{align-self:center;background:rgba(0,0,0,.1);border-radius:10px;padding:3px 12px;font-size:10px;color:#777}
+.sm{align-self:center;background:rgba(7,94,84,.09);border:1px solid rgba(7,94,84,.16);border-radius:10px;padding:5px 12px;font-size:10px;color:var(--g2);font-weight:600;text-align:center;max-width:95%;line-height:1.5}
+.b{max-width:86%;border-radius:13px;padding:9px 12px;font-size:13px;line-height:1.6;word-break:break-word}
+.b.bot{background:#fff;align-self:flex-start;border-top-left-radius:3px;color:#111;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.b.usr{background:var(--wam);align-self:flex-end;border-top-right-radius:3px;color:#111;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.bt{font-size:9px;color:#aaa;margin-top:4px;text-align:right}
+.b.bot .bt{text-align:left}
+.lvl{display:inline-flex;align-items:center;gap:3px;font-size:8px;font-weight:700;padding:2px 6px;border-radius:5px;margin-top:5px;border:.5px solid;font-family:var(--m);letter-spacing:.3px}
+.nlu{background:#EDE9FE;color:#6D28D9;border-color:#6D28D9}
+.api{background:#D1FAE5;color:#065F46;border-color:#065F46}
+.flw{background:#DBEAFE;color:#1E40AF;border-color:#1E40AF}
+
+.cta-action-btn{align-self:flex-start;background:var(--wa);color:#fff;border:none;border-radius:22px;padding:13px 22px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--f);box-shadow:0 3px 12px rgba(37,211,102,.4);margin-top:2px;margin-bottom:4px;max-width:88%;display:inline-flex;align-items:center;gap:6px;-webkit-appearance:none;appearance:none;touch-action:manipulation}
+.cta-action-btn:active{transform:scale(.96);background:#1FBD5C}
+
+.flowmsg{background:var(--wam);align-self:flex-end;border-radius:13px;border-top-right-radius:3px;max-width:90%;box-shadow:0 1px 3px rgba(0,0,0,.1);overflow:hidden}
+.flowmsg-h{background:rgba(0,0,0,.04);padding:8px 12px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(0,0,0,.06)}
+.flowmsg-h-ico{width:24px;height:24px;border-radius:50%;background:var(--g2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}
+.flowmsg-h-tit{font-size:11px;font-weight:700;color:#222;flex:1}
+.flowmsg-h-sub{font-size:9px;color:#666;margin-top:1px}
+.flowmsg-b{padding:8px 12px}
+.flowmsg-row{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;padding:3px 0;font-size:11.5px}
+.flowmsg-row-k{color:#5a5a5a;flex-shrink:0}
+.flowmsg-row-v{color:#111;font-weight:600;text-align:right;font-family:var(--m)}
+.flowmsg-bt{font-size:9px;color:#666;padding:0 12px 6px;text-align:right}
+
+/* PDF REAL ADJUNTO */
+.pdfdoc{align-self:flex-start;max-width:88%;background:#fff;border-radius:13px;border-top-left-radius:3px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.pdfdoc-preview{background:linear-gradient(180deg,#FAFAFA,#F0F0F0);padding:18px 14px;display:flex;flex-direction:column;align-items:center;border-bottom:1px solid #E5E5E5}
+.pdfdoc-page{background:#fff;width:100%;max-width:200px;aspect-ratio:8.5/11;border:1px solid #DDD;box-shadow:0 2px 8px rgba(0,0,0,.08);padding:14px 12px;font-size:7px;color:#222;font-family:Georgia,serif;line-height:1.5;position:relative;overflow:hidden}
+.pdfdoc-pagehead{display:flex;align-items:center;gap:5px;padding-bottom:5px;border-bottom:1.5px solid #075E54;margin-bottom:5px}
+.pdfdoc-pagelogo{width:18px;height:18px;background:#075E54;color:#fff;font-size:7px;font-weight:800;display:flex;align-items:center;justify-content:center;border-radius:2px}
+.pdfdoc-pagetit{font-size:7px;font-weight:800;color:#075E54;letter-spacing:.3px}
+.pdfdoc-pagesub{font-size:5.5px;color:#888;margin-top:1px}
+.pdfdoc-pgline{font-size:5.5px;color:#333;line-height:1.5;padding:0.5px 0}
+.pdfdoc-pgline-b{font-weight:700;color:#222}
+.pdfdoc-pgsec{font-size:6px;font-weight:700;color:#075E54;margin-top:5px;padding-top:3px;border-top:.5px solid #E5E5E5}
+.pdfdoc-pgrow{display:flex;justify-content:space-between;padding:0.5px 0;font-size:5.5px}
+.pdfdoc-pgrow-n{color:#333}
+.pdfdoc-pgrow-v{color:#075E54;font-weight:700;font-family:'JetBrains Mono',monospace}
+.pdfdoc-pgrow-r{color:#999;font-family:'JetBrains Mono',monospace}
+.pdfdoc-foot{display:flex;align-items:center;gap:10px;padding:11px 13px;background:#fff;cursor:pointer}
+.pdfdoc-foot:active{background:#F8F8F8}
+.pdfdoc-ico{width:36px;height:42px;background:#DC3545;color:#fff;border-radius:5px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:10px;font-family:var(--m);flex-shrink:0;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.pdfdoc-info{flex:1;min-width:0}
+.pdfdoc-name{font-size:12px;color:#222;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pdfdoc-meta{font-size:10px;color:#888;margin-top:1px}
+.pdfdoc-dl{color:var(--g2);font-size:18px;flex-shrink:0}
+
+/* WHATSAPP FLOW */
+.flowmodal{position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;background:#fff;display:none}
+.flowmodal.show{display:flex;flex-direction:column}
+body.flow-open #main{pointer-events:none;touch-action:none}
+.flowsheet{flex:1;min-height:0;display:flex;flex-direction:column;animation:slideUp .3s;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:var(--watxt);background:#fff}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.flowhead{background:var(--wabg);padding:14px 14px 11px;display:flex;align-items:center;gap:8px;flex-shrink:0;border-bottom:1px solid #E9EDEF}
+.flowclose{background:transparent;border:none;color:var(--watxt);width:30px;height:30px;font-size:22px;cursor:pointer;font-weight:300}
+.flowtitlewrap{flex:1}
+.flowtitle{font-size:14px;font-weight:600;color:var(--watxt);line-height:1.2}
+.flowsub{color:var(--wasub);font-size:10px;margin-top:2px;display:flex;align-items:center;gap:4px}
+.flowprog{display:flex;gap:3px;padding:8px 14px;background:#fff;flex-shrink:0}
+.flowprog-bar{flex:1;height:3px;background:#E9EDEF;border-radius:2px;overflow:hidden}
+.flowprog-bar.on{background:var(--wabtn)}
+.flowprog-bar.done{background:var(--wabtn)}
+.flowbody{flex:1;overflow-y:auto;padding:18px 18px 12px;background:#fff;-webkit-overflow-scrolling:touch}
+.flowscreentit{font-size:18px;font-weight:600;color:var(--watxt);margin-bottom:6px;line-height:1.25}
+.flowscreendesc{font-size:13px;color:var(--wasub);margin-bottom:18px;line-height:1.5}
+.flowfield{margin-bottom:16px}
+.flowlbl{font-size:13px;font-weight:600;color:var(--watxt);margin-bottom:6px;display:flex;align-items:center;gap:3px}
+.flowlbl .req{color:#dc2626}
+.flowinp{width:100%;border:1px solid #D1D7DB;border-radius:8px;padding:11px 13px;font-size:14px;font-family:inherit;outline:none;transition:border-color .15s;background:#fff;color:var(--watxt)}
+.flowinp:focus{border-color:var(--wabtn);border-width:1.5px;padding:10.5px 12.5px}
+.flowinp::placeholder{color:#A8A8A8}
+
+.flowradios{display:flex;flex-direction:column;gap:10px}
+.flowradio{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid #D1D7DB;border-radius:10px;padding:16px;cursor:pointer;transition:all .15s}
+.flowradio.on{border-color:var(--wabtn);border-width:1.5px;background:#F0FAF4;padding:15.5px}
+.flowradio-dot{width:20px;height:20px;border-radius:50%;border:2px solid #C0C5C8;flex-shrink:0;position:relative;transition:all .15s}
+.flowradio.on .flowradio-dot{border-color:var(--wabtn)}
+.flowradio.on .flowradio-dot::after{content:'';position:absolute;inset:3px;background:var(--wabtn);border-radius:50%}
+.flowradio-info{flex:1;min-width:0}
+.flowradio-tit{font-size:14px;font-weight:600;color:var(--watxt);line-height:1.3}
+.flowradio-sub{font-size:11px;color:var(--wasub);margin-top:2px;line-height:1.4}
+.flowradio-icon{font-size:24px;flex-shrink:0}
+
+.citygrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.citycard{background:#fff;border:1px solid #D1D7DB;border-radius:10px;padding:14px 8px;cursor:pointer;text-align:center;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:6px}
+.citycard.on{border-color:var(--wabtn);border-width:1.5px;background:#F0FAF4;padding:13.5px 7.5px}
+.citycard-icon{font-size:26px}
+.citycard-name{font-size:12px;font-weight:600;color:var(--watxt)}
+
+.flownote{background:#FFF7ED;border:1px solid #FED7AA;border-radius:8px;padding:10px 12px;margin-top:14px;font-size:11px;color:#9A3412;line-height:1.5;display:flex;gap:8px}
+.flownote-ico{font-size:14px;flex-shrink:0}
+.flownote strong{font-weight:700}
+
+.flowfoot{background:#fff;border-top:1px solid #E9EDEF;padding:10px 16px;padding-bottom:max(12px,env(safe-area-inset-bottom));flex-shrink:0;display:flex;align-items:center;gap:10px}
+.flowfoot-info{flex:1;min-width:0}
+.flowfoot-tot-l{font-size:10px;color:var(--wasub);font-weight:600;letter-spacing:.3px;text-transform:uppercase}
+.flowfoot-tot-c{font-size:10px;color:var(--wasub);margin-top:1px}
+.flowsend{background:var(--wabtn);color:#fff;border:none;border-radius:24px;padding:13px 22px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;flex-shrink:0;min-width:110px;transition:all .15s}
+.flowsend:active:not(:disabled){background:#008F70;transform:scale(.97)}
+.flowsend:disabled{background:#D1D7DB;color:#fff;cursor:default}
+
+.summbox{background:#F7F8FA;border:1px solid #E9EDEF;border-radius:10px;padding:13px 14px;margin-bottom:14px}
+.summsec{margin-bottom:10px}
+.summsec:last-child{margin-bottom:0}
+.summlbl{font-size:10px;color:var(--wasub);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px}
+.summval{font-size:13px;color:var(--watxt);font-weight:500;line-height:1.45;font-family:var(--m)}
+
+.ibar{background:#F0EAE0;padding:5px 10px;padding-bottom:max(8px,env(safe-area-inset-bottom));flex-shrink:0;border-top:1px solid rgba(0,0,0,.06)}
+.irow{display:flex;align-items:center;gap:7px;max-width:600px;margin:0 auto}
+.ihnt{text-align:center;font-size:9px;color:#aaa;margin-top:3px}
+.inxt{flex:1;background:var(--wa);color:#fff;border:none;border-radius:22px;padding:12px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--f);box-shadow:0 3px 10px rgba(37,211,102,.35);transition:transform .15s}
+.inxt:active{transform:scale(.97)}
+.inxt:disabled{background:#ccc;box-shadow:none;cursor:default}
+.irst{background:rgba(7,94,84,.08);border:1.5px solid rgba(7,94,84,.2);color:var(--g2);border-radius:22px;padding:12px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--f);white-space:nowrap;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<div id="intro">
+  <div class="il">📋</div>
+  <div class="ibr">WDB / 593IA · Jelou</div>
+  <div class="itr">F2 · Consulta de Resultados</div>
+  <div class="isu">Demo automatizado · WhatsApp Flow nativo<br>Replica el portal web de Interlab</div>
+  <div class="featrow">
+    <div class="featcd"><div class="featico">📋</div><div class="feattx">Replica del portal web<span class="featlbl">interlabsa.com</span></div></div>
+    <div class="featcd"><div class="featico">⚡</div><div class="feattx">API Interlab en tiempo real<span class="featlbl">Sin asesor</span></div></div>
+    <div class="featcd"><div class="featico">📄</div><div class="feattx">PDF adjunto en el chat<span class="featlbl">Sin abrir navegador</span></div></div>
+    <div class="featcd"><div class="featico">🔐</div><div class="feattx">Autenticación segura<span class="featlbl">Orden + Clave</span></div></div>
+  </div>
+  <button class="startbtn" onclick="startDemo()">Iniciar demo ▶</button>
+  <div class="icr">
+    <div class="icr-n">Juan Carlos Páez · WDB / 593IA</div>
+    <div class="icr-r">F2 Resultados automatizado</div>
+    <div class="icr-t">JELOU Platform Partner · 593IA</div>
+  </div>
+</div>
+
+<div id="main">
+  <div class="topbar">
+    <div class="tb1">
+      <button class="tbback" onclick="goIntro()">←</button>
+      <div class="av">IN</div>
+      <div style="flex:1"><div class="tbn">InterNOVA ✓</div><div class="tbs">F2 · Resultados · Powered by Jelou</div></div>
+      <div class="tbbg">AUTO</div>
+    </div>
+    <div class="ctx"><div class="ctxd"></div><div class="ctxl">CONTEXTO JELOU</div><div class="ctxv" id="ctx">Sesión nueva</div></div>
+  </div>
+  <div class="chat" id="chat"></div>
+  <div class="ibar">
+    <div class="irow">
+      <button class="irst" onclick="restart()">↺ Reiniciar</button>
+      <button class="inxt" id="nxtbtn" onclick="nextStep()">▶ Siguiente paso</button>
+    </div>
+    <div class="ihnt" id="hint">Presiona Siguiente paso para avanzar</div>
+  </div>
+</div>
+
+<div class="flowmodal" id="flowmodal">
+  <div class="flowsheet">
+    <div class="flowhead">
+      <button class="flowclose" onclick="closeFlow()">✕</button>
+      <div class="flowtitlewrap">
+        <div class="flowtitle" id="flowtitle">Consulta de Resultados</div>
+        <div class="flowsub">🔒 <span>Gestionado por Interlab</span></div>
+      </div>
+    </div>
+    <div class="flowprog" id="flowprog"></div>
+    <div class="flowbody" id="flowbody"></div>
+    <div class="flowfoot">
+      <div class="flowfoot-info" id="flowfootinfo"></div>
+      <button class="flowsend" id="flowsend" onclick="flowNext()">Continuar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+function fixH(){
+  var m=document.getElementById('main');
+  if(m&&m.classList.contains('show'))m.style.height=window.innerHeight+'px';
+}
+window.addEventListener('resize',fixH);
+window.addEventListener('orientationchange',function(){setTimeout(fixH,300);});
+
+var stepIdx=0;
+function ts(){var n=new Date();return n.getHours()+':'+('0'+n.getMinutes()).slice(-2);}
+function scrollDn(){
+  var c=document.getElementById('chat');
+  if(!c)return;
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){c.scrollTop=c.scrollHeight+9999;});
+  });
+}
+function setCtx(t){document.getElementById('ctx').textContent=t;}
+function setHint(t){document.getElementById('hint').textContent=t;}
+function done(){
+  document.getElementById('nxtbtn').textContent='✅ Completado';
+  document.getElementById('nxtbtn').disabled=true;
+  setHint('Flujo completado. Presiona Reiniciar para volver a verlo.');
+}
+
+function addBot(html,tag,lvl){
+  var c=document.getElementById('chat');
+  var d=document.createElement('div');d.className='b bot';
+  var em={api:'⚡',nlu:'🧠',flw:'📋'}[lvl]||'🧠';
+  d.innerHTML=html+'<br><span class="lvl '+lvl+'">'+em+' '+tag+'</span><div class="bt">'+ts()+'</div>';
+  c.appendChild(d);scrollDn();
+}
+function addBotCTA(txt,btnText,btnAction){
+  var c=document.getElementById('chat');
+  var d=document.createElement('div');d.className='b bot';
+  d.innerHTML=txt+'<br><span class="lvl flw">📋 WhatsApp Flow · Jelou</span><div class="bt">'+ts()+'</div>';
+  c.appendChild(d);
+  var btn=document.createElement('button');
+  btn.className='cta-action-btn';
+  btn.innerHTML='📋 '+btnText;
+  btn.setAttribute('type','button');
+  btn.addEventListener('click',function(){eval(btnAction);});
+  c.appendChild(btn);
+  scrollDn();
+}
+function addUsr(t){
+  var c=document.getElementById('chat');
+  var d=document.createElement('div');d.className='b usr';
+  d.innerHTML=t.replace(/\n/g,'<br>')+'<div class="bt">'+ts()+' ✓✓</div>';
+  c.appendChild(d);scrollDn();
+}
+function addSys(t){
+  var c=document.getElementById('chat');
+  var d=document.createElement('div');d.className='sm';d.innerHTML=t;c.appendChild(d);scrollDn();
+}
+function addDp(t){
+  var c=document.getElementById('chat');
+  var d=document.createElement('div');d.className='dp';d.textContent=t;c.appendChild(d);scrollDn();
+}
+function addFlowSubmittedMsg(data){
+  var c=document.getElementById('chat');
+  var d=document.createElement('div');d.className='flowmsg';
+  var rows=data.fields.map(function(f){
+    return '<div class="flowmsg-row"><span class="flowmsg-row-k">'+f[0]+'</span><span class="flowmsg-row-v">'+f[1]+'</span></div>';
+  }).join('');
+  d.innerHTML='<div class="flowmsg-h"><div class="flowmsg-h-ico">📋</div>'
+    +'<div style="flex:1"><div class="flowmsg-h-tit">'+data.title+'</div><div class="flowmsg-h-sub">Formulario enviado</div></div></div>'
+    +'<div class="flowmsg-b">'+rows+'</div>'
+    +'<div class="flowmsg-bt">'+ts()+' ✓✓</div>';
+  c.appendChild(d);scrollDn();
+}
+function addResultsPDF(){
+  var c=document.getElementById('chat');
+  var d=document.createElement('div');d.className='pdfdoc';
+  d.innerHTML=
+    '<div class="pdfdoc-preview"><div class="pdfdoc-page">'
+    +'<div class="pdfdoc-pagehead"><div class="pdfdoc-pagelogo">IL</div>'
+    +'<div style="flex:1"><div class="pdfdoc-pagetit">INTERLAB · INFORME DE RESULTADOS</div><div class="pdfdoc-pagesub">Laboratorio Clínico · Acred. SAE ISO 15189</div></div></div>'
+    +'<div class="pdfdoc-pgline"><span class="pdfdoc-pgline-b">Paciente:</span> Carlos Méndez Ruiz</div>'
+    +'<div class="pdfdoc-pgline"><span class="pdfdoc-pgline-b">CI:</span> 0923456789</div>'
+    +'<div class="pdfdoc-pgline"><span class="pdfdoc-pgline-b">Orden:</span> 2026-48123</div>'
+    +'<div class="pdfdoc-pgline"><span class="pdfdoc-pgline-b">Fecha:</span> 18 may 2026</div>'
+    +'<div class="pdfdoc-pgline"><span class="pdfdoc-pgline-b">Médico:</span> Dr. A. Velasco</div>'
+    +'<div class="pdfdoc-pgsec">HEMATOLOGÍA</div>'
+    +'<div class="pdfdoc-pgrow"><span class="pdfdoc-pgrow-n">Hemoglobina</span><span class="pdfdoc-pgrow-v">14.2</span><span class="pdfdoc-pgrow-r">12-16</span></div>'
+    +'<div class="pdfdoc-pgrow"><span class="pdfdoc-pgrow-n">Hematocrito</span><span class="pdfdoc-pgrow-v">42.5</span><span class="pdfdoc-pgrow-r">37-47</span></div>'
+    +'<div class="pdfdoc-pgrow"><span class="pdfdoc-pgrow-n">Leucocitos</span><span class="pdfdoc-pgrow-v">7,200</span><span class="pdfdoc-pgrow-r">4-11k</span></div>'
+    +'<div class="pdfdoc-pgsec">BIOQUÍMICA</div>'
+    +'<div class="pdfdoc-pgrow"><span class="pdfdoc-pgrow-n">Glucosa</span><span class="pdfdoc-pgrow-v">92</span><span class="pdfdoc-pgrow-r">70-110</span></div>'
+    +'<div class="pdfdoc-pgrow"><span class="pdfdoc-pgrow-n">Colesterol</span><span class="pdfdoc-pgrow-v">189</span><span class="pdfdoc-pgrow-r">&lt;200</span></div>'
+    +'<div class="pdfdoc-pgrow"><span class="pdfdoc-pgrow-n">Triglicéridos</span><span class="pdfdoc-pgrow-v">128</span><span class="pdfdoc-pgrow-r">&lt;150</span></div>'
+    +'<div class="pdfdoc-pgsec">ENDOCRINOLOGÍA</div>'
+    +'<div class="pdfdoc-pgrow"><span class="pdfdoc-pgrow-n">TSH</span><span class="pdfdoc-pgrow-v">2.1</span><span class="pdfdoc-pgrow-r">0.5-4.5</span></div>'
+    +'</div></div>'
+    +'<div class="pdfdoc-foot" id="pdfFootBtn"><div class="pdfdoc-ico">PDF</div>'
+    +'<div class="pdfdoc-info"><div class="pdfdoc-name">Resultados_2026-48123.pdf</div><div class="pdfdoc-meta">Toque para descargar · ~28 KB</div></div>'
+    +'<div class="pdfdoc-dl">↓</div></div>';
+  c.appendChild(d);
+  // Asignar listener al footer del PDF — más confiable que onclick inline en iOS
+  var foot=d.querySelector('#pdfFootBtn');
+  if(foot){
+    foot.style.cursor='pointer';
+    foot.addEventListener('click',function(){downloadResultsPDF();});
+  }
+  scrollDn();
+}
+
+// Genera y descarga el PDF REAL de resultados con jsPDF
+function downloadResultsPDF(){
+  // Verificar que jsPDF cargó correctamente
+  if(!window.jspdf||!window.jspdf.jsPDF){
+    alert('La librería de PDF no cargó. Verifique su conexión a internet.');
+    return;
+  }
+  try{
+    var jsPDF=window.jspdf.jsPDF;
+    var doc=new jsPDF({unit:'mm',format:'a4'});
+    var W=210, M=15;
+    var y=M;
+
+    // ENCABEZADO con banda verde Interlab
+    doc.setFillColor(7,94,84);
+    doc.rect(0,0,W,28,'F');
+    // Logo cuadrado
+    doc.setFillColor(255,255,255);
+    doc.roundedRect(M,7,14,14,1,1,'F');
+    doc.setTextColor(7,94,84);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(11);
+    doc.text('IL',M+7,16,{align:'center'});
+    // Título
+    doc.setTextColor(255,255,255);
+    doc.setFontSize(13);
+    doc.text('INTERLAB',M+19,13);
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(8.5);
+    doc.text('Laboratorio Clínico · Acreditación SAE ISO 15189',M+19,18);
+    doc.setFontSize(7);
+    doc.text('Certificación ISO 9001 · Atención 24/7 en Guayaquil, Machala, Portoviejo',M+19,22);
+    y=36;
+
+    // TÍTULO DEL INFORME
+    doc.setTextColor(7,94,84);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(14);
+    doc.text('INFORME DE RESULTADOS DE LABORATORIO',W/2,y,{align:'center'});
+    y+=10;
+
+    // DATOS DEL PACIENTE — caja
+    doc.setDrawColor(220,220,220);
+    doc.setFillColor(247,248,250);
+    doc.roundedRect(M,y,W-2*M,28,2,2,'FD');
+    doc.setTextColor(102,119,129);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(7);
+    doc.text('DATOS DEL PACIENTE',M+3,y+5);
+    doc.setTextColor(17,27,33);
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(9);
+    doc.text('Paciente: ',M+3,y+11);
+    doc.setFont('helvetica','bold');
+    doc.text('Carlos Méndez Ruiz',M+22,y+11);
+    doc.setFont('helvetica','normal');
+    doc.text('CI: ',M+3,y+16);
+    doc.setFont('helvetica','bold');
+    doc.text('0923456789',M+9,y+16);
+    doc.setFont('helvetica','normal');
+    doc.text('Edad: 42 años',M+50,y+16);
+    doc.text('Sexo: Masculino',M+85,y+16);
+    doc.text('Orden: ',M+3,y+21);
+    doc.setFont('helvetica','bold');
+    doc.text('2026-48123',M+15,y+21);
+    doc.setFont('helvetica','normal');
+    doc.text('Médico solicitante: Dr. Andrés Velasco · MED-12847',M+50,y+21);
+    doc.text('Fecha toma: 18-may-2026',M+3,y+26);
+    doc.text('Fecha emisión: 20-may-2026',M+85,y+26);
+    y+=34;
+
+    // Helper para secciones de resultados
+    function section(title){
+      doc.setFillColor(7,94,84);
+      doc.rect(M,y,W-2*M,6,'F');
+      doc.setTextColor(255,255,255);
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(8.5);
+      doc.text(title,M+2,y+4.2);
+      y+=6;
+      // Headers de columnas
+      doc.setFillColor(240,240,240);
+      doc.rect(M,y,W-2*M,5,'F');
+      doc.setTextColor(80,80,80);
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(7);
+      doc.text('PRUEBA',M+2,y+3.5);
+      doc.text('RESULTADO',M+90,y+3.5);
+      doc.text('UNIDAD',M+125,y+3.5);
+      doc.text('REFERENCIA',M+150,y+3.5);
+      y+=5;
+    }
+    function row(name,result,unit,ref,flag){
+      doc.setDrawColor(235,235,235);
+      doc.line(M,y,W-M,y);
+      doc.setTextColor(17,27,33);
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(8.5);
+      doc.text(name,M+2,y+4);
+      doc.setFont('helvetica','bold');
+      if(flag==='H'){doc.setTextColor(220,53,69);}
+      else if(flag==='L'){doc.setTextColor(220,53,69);}
+      else{doc.setTextColor(7,94,84);}
+      doc.text(result,M+90,y+4);
+      if(flag){doc.text(' ['+flag+']',M+105,y+4);}
+      doc.setTextColor(80,80,80);
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(8);
+      doc.text(unit,M+125,y+4);
+      doc.text(ref,M+150,y+4);
+      y+=5.5;
+    }
+
+    // HEMATOLOGÍA
+    section('HEMATOLOGÍA');
+    row('Hemoglobina','14.2','g/dL','12.0 - 16.0');
+    row('Hematocrito','42.5','%','37.0 - 47.0');
+    row('Eritrocitos','4.85','x10^6/uL','4.20 - 5.40');
+    row('Leucocitos','7,200','/uL','4,000 - 11,000');
+    row('Plaquetas','245,000','/uL','150,000 - 450,000');
+    row('VCM','87.6','fL','80 - 100');
+    y+=2;
+
+    // BIOQUÍMICA
+    section('BIOQUÍMICA');
+    row('Glucosa en ayunas','92','mg/dL','70 - 110');
+    row('Urea','32','mg/dL','15 - 45');
+    row('Creatinina','0.95','mg/dL','0.70 - 1.30');
+    row('Ácido úrico','5.8','mg/dL','3.5 - 7.2');
+    y+=2;
+
+    // PERFIL LIPÍDICO
+    section('PERFIL LIPÍDICO');
+    row('Colesterol total','189','mg/dL','< 200');
+    row('HDL Colesterol','52','mg/dL','> 40');
+    row('LDL Colesterol','118','mg/dL','< 130');
+    row('Triglicéridos','128','mg/dL','< 150');
+    y+=2;
+
+    // ENDOCRINOLOGÍA
+    section('ENDOCRINOLOGÍA');
+    row('TSH','2.1','uUI/mL','0.5 - 4.5');
+    row('T4 Libre','1.3','ng/dL','0.9 - 1.7');
+    y+=4;
+
+    // PIE — firma y validación
+    doc.setDrawColor(7,94,84);
+    doc.line(M,y,W-M,y);
+    y+=4;
+    doc.setTextColor(80,80,80);
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(7.5);
+    doc.text('Resultados validados por: Dra. Patricia Romero Núñez · Bioquímica clínica · MSP-BQ-04829',M,y);
+    y+=4;
+    doc.text('Documento generado electrónicamente el '+new Date().toLocaleDateString('es-EC')+' a las '+new Date().toLocaleTimeString('es-EC',{hour:'2-digit',minute:'2-digit'})+' · Código de verificación: '+Math.random().toString(36).substring(2,12).toUpperCase(),M,y);
+    y+=4;
+    doc.setTextColor(150,150,150);
+    doc.setFontSize(6.5);
+    doc.text('[H] Valor sobre el rango de referencia · [L] Valor bajo el rango de referencia · Consulte con su médico tratante para interpretación.',M,y);
+    y+=3;
+    doc.text('INTERLAB S.A. · Emma E. Ortiz Bermeo y Justino Cornejo, Mz. 14, Guayaquil · 04-2594010 · interlab.com.ec',M,y);
+
+    // GUARDAR
+    doc.save('Resultados_2026-48123.pdf');
+  }catch(e){
+    alert('Error generando el PDF: '+e.message);
+  }
+}
+
+var flowState={
+  screen:0, totalScreens:4,
+  tipo:'paciente', ciudad:'',
+  orden:'', clave:'',
+  usuario:'', contrasena:'',
+};
+
+var PDP='Buenos días 👋 Bienvenido a Interlab. Estoy aquí para ayudarle con información sobre nuestros servicios.'
+  +'<br><br>🔐 <strong>Protección de sus datos personales</strong><br>'
+  +'Para continuar, necesito su consentimiento expreso para el tratamiento de sus datos personales conforme a nuestra política:<br>'
+  +'👉 <span style="color:var(--g2);text-decoration:underline">interlab.com.ec/proteccióndatos.html</span>'
+  +'<br><br>¿Acepta nuestra política de tratamiento de datos personales?';
+
+var STEPS=[
+  {fn:function(){
+    addDp('Hoy · Demo F2 Resultados · WDB/593IA para INTERLAB S.A.');
+    addSys('F2 — Consulta de Resultados · 100% automatizado · Replica el portal web interlabsa.com');
+  }},
+  {fn:function(){addBot(PDP,'PDP · Aprobación EXPLÍCITA · Regla kickoff · Jelou','nlu');}},
+  {fn:function(){addUsr('Acepto');}},
+  {fn:function(){addBot('Gracias, Carlos. Su consentimiento ha sido registrado.<br><br>¿En qué puedo ayudarle hoy?','PDP confirmado · Sesión iniciada · Jelou','nlu');}},
+  {fn:function(){addUsr('quiero ver mis resultados');}},
+  {fn:function(){
+    addBot('Con mucho gusto le ayudo a consultar sus resultados al instante.<br><br>Le envío nuestro consultor automatizado — el mismo del portal web, ahora directamente en WhatsApp.','NLU → RESULTADOS · enviando WhatsApp Flow · Jelou','nlu');
+    addBotCTA('Complete sus datos y reciba sus resultados al instante.','Consultar resultados','openFlow()');
+    setCtx('F2·esperando Flow');
+  }},
+  {fn:function(){
+    addFlowSubmittedMsg({
+      title:'Consulta de Resultados',
+      fields:[
+        ['Tipo de consulta',flowState.tipo==='paciente'?'Paciente':'Convenio'],
+        ['Ciudad',flowState.ciudad],
+        [flowState.tipo==='paciente'?'Número de orden':'Usuario',flowState.tipo==='paciente'?flowState.orden:flowState.usuario],
+        [flowState.tipo==='paciente'?'Clave':'Contraseña','••••••••'],
+      ],
+    });
+  }},
+  {fn:function(){addBot('⚡ Consultando sus resultados con el sistema Interlab...<br><em style="color:#888;font-size:11px">Validando credenciales y descargando archivo</em>','API Interlab · validando · Jelou','api');}},
+  {fn:function(){
+    addBot('✅ ¡Sus resultados están listos, Carlos!<br><br>📄 He generado su PDF con los resultados completos.<br>📧 También se lo envié a su correo registrado.','API exitosa · PDF generado · enviado al correo · Jelou','api');
+    addResultsPDF();
+  }},
+  {fn:function(){addBot('¿Le gustaría crear su <strong>historial clínico digital</strong> para acceder a todos sus exámenes en un solo lugar? Disponible en Guayaquil, Quito y Cuenca.','Sugerencia F8 historial clínico · Regla del documento · Jelou','nlu');}},
+  {fn:function(){addUsr('no, gracias, eso era todo');}},
+  {fn:function(){
+    addBot('Con mucho gusto, Carlos. Espero que su resultado sea el esperado.<br><br>📍 <strong>Múltiples sedes:</strong> Guayaquil │ Quito │ Cuenca │ Portoviejo │ Manta │ Machala │ Milagro │ Quevedo<br>⏰ <strong>Atención 24/7:</strong> Guayaquil │ Machala │ Portoviejo<br><br>¡Que tenga un excelente día! 👋','Cierre post-resultados personalizado · 8 ciudades · Jelou','nlu');
+    done();
+  }},
+];
+
+// FLOW
+function openFlow(){
+  flowState.screen=0;
+  flowState.tipo='paciente';
+  flowState.ciudad='Guayaquil';
+  flowState.orden='2026-48123';
+  flowState.clave='SECURE2026';
+  flowState.usuario='LAB-SANTA-ANA';
+  flowState.contrasena='LABCONV2026';
+  document.getElementById('flowmodal').className='flowmodal show';
+  document.body.classList.add('flow-open');
+  renderFlowScreen();
+}
+function closeFlow(){
+  document.getElementById('flowmodal').className='flowmodal';
+  document.body.classList.remove('flow-open');
+  fixH();
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      var c=document.getElementById('chat');
+      if(c)c.scrollTop=c.scrollHeight+9999;
+    });
+  });
+}
+function submitFlow(){closeFlow();setTimeout(function(){nextStep();},350);}
+function flowNext(){
+  if(flowState.screen<flowState.totalScreens-1){flowState.screen++;renderFlowScreen();}
+  else{submitFlow();}
+}
+function renderFlowScreen(){
+  var prog=document.getElementById('flowprog');
+  prog.innerHTML='';
+  for(var i=0;i<flowState.totalScreens;i++){
+    var b=document.createElement('div');
+    b.className='flowprog-bar'+(i<flowState.screen?' done':i===flowState.screen?' on':'');
+    prog.appendChild(b);
+  }
+  document.getElementById('flowtitle').textContent='Consulta de Resultados · '+(flowState.screen+1)+' de '+flowState.totalScreens;
+  if(flowState.screen===0)renderTipo();
+  else if(flowState.screen===1)renderCiudad();
+  else if(flowState.screen===2)renderCredenciales();
+  else if(flowState.screen===3)renderResumen();
+}
+function renderTipo(){
+  document.getElementById('flowbody').innerHTML=
+    '<div class="flowscreentit">Tipo de consulta</div>'
+    +'<div class="flowscreendesc">¿Es paciente o representa un convenio / laboratorio?</div>'
+    +'<div class="flowradios">'
+    +'<div class="flowradio '+(flowState.tipo==='paciente'?'on':'')+'" onclick="setTipo(\'paciente\')">'
+    +'<div class="flowradio-dot"></div>'
+    +'<div class="flowradio-info"><div class="flowradio-tit">Paciente</div><div class="flowradio-sub">Si eres paciente y quieres descargar tus resultados de exámenes</div></div>'
+    +'<div class="flowradio-icon">👤</div></div>'
+    +'<div class="flowradio '+(flowState.tipo==='convenio'?'on':'')+'" onclick="setTipo(\'convenio\')">'
+    +'<div class="flowradio-dot"></div>'
+    +'<div class="flowradio-info"><div class="flowradio-tit">Convenio</div><div class="flowradio-sub">Si tienes un convenio y quieres descargar tus resultados de exámenes</div></div>'
+    +'<div class="flowradio-icon">👥</div></div></div>';
+  document.getElementById('flowfootinfo').innerHTML='<div class="flowfoot-tot-c">Paso 1 de '+flowState.totalScreens+'</div><div class="flowfoot-tot-l" style="margin-top:2px">Tipo de consulta</div>';
+  document.getElementById('flowsend').textContent='Continuar';
+  document.getElementById('flowsend').disabled=false;
+}
+function setTipo(t){flowState.tipo=t;renderTipo();}
+function renderCiudad(){
+  var cities=flowState.tipo==='paciente'
+    ? [['Guayaquil','🏙️'],['Milagro','🌆'],['Portoviejo','🌇'],['Manta','🏖️'],['Machala','🏝️'],['Quevedo','🌳'],['Cuenca','⛰️'],['Quito','🏔️']]
+    : [['Guayaquil','🏙️'],['Portoviejo','🌇'],['Manta','🏖️'],['Machala','🏝️'],['Quevedo','🌳'],['Cuenca','⛰️'],['Quito','🏔️']];
+  var grid=cities.map(function(c){
+    var on=flowState.ciudad===c[0];
+    return '<div class="citycard '+(on?'on':'')+'" onclick="setCiudad(\''+c[0]+'\')"><div class="citycard-icon">'+c[1]+'</div><div class="citycard-name">'+c[0]+'</div></div>';
+  }).join('');
+  document.getElementById('flowbody').innerHTML=
+    '<div class="flowscreentit">'+(flowState.tipo==='paciente'?'Seleccione la ciudad donde se realizó sus exámenes':'Seleccione la ciudad donde envió a realizar sus exámenes')+'</div>'
+    +'<div class="flowscreendesc">'+(flowState.tipo==='paciente'?'Donde acudió a la sede o donde recibió el servicio a domicilio.':'Sede a la que se enviaron las muestras del convenio.')+'</div>'
+    +'<div class="citygrid">'+grid+'</div>';
+  document.getElementById('flowfootinfo').innerHTML='<div class="flowfoot-tot-c">Paso 2 de '+flowState.totalScreens+'</div><div class="flowfoot-tot-l" style="margin-top:2px">Ciudad</div>';
+  document.getElementById('flowsend').textContent='Continuar';
+  document.getElementById('flowsend').disabled=!flowState.ciudad;
+}
+function setCiudad(c){flowState.ciudad=c;renderCiudad();}
+function renderCredenciales(){
+  var isPaciente=flowState.tipo==='paciente';
+  var fields=isPaciente
+    ? '<div class="flowfield"><div class="flowlbl">Número de orden <span class="req">*</span></div>'
+      +'<input class="flowinp" value="'+flowState.orden+'" oninput="flowState.orden=this.value" placeholder="Digite el número de orden"/></div>'
+      +'<div class="flowfield"><div class="flowlbl">Clave <span class="req">*</span></div>'
+      +'<input class="flowinp" type="password" value="'+flowState.clave+'" oninput="flowState.clave=this.value" placeholder="Digite la clave del comprobante"/></div>'
+    : '<div class="flowfield"><div class="flowlbl">Usuario <span class="req">*</span></div>'
+      +'<input class="flowinp" value="'+flowState.usuario+'" oninput="flowState.usuario=this.value" placeholder="Usuario del convenio"/></div>'
+      +'<div class="flowfield"><div class="flowlbl">Contraseña <span class="req">*</span></div>'
+      +'<input class="flowinp" type="password" value="'+flowState.contrasena+'" oninput="flowState.contrasena=this.value" placeholder="Contraseña del convenio"/></div>';
+  var notas=isPaciente
+    ? '<div class="flownote"><div class="flownote-ico">📱</div><div><strong>Importante:</strong> Si está consultando desde el celular móvil, al descargar el PDF debe consultar su carpeta de descargas. Si usa iPhone se recomienda Safari.</div></div>'
+      +'<div class="flownote" style="margin-top:8px"><div class="flownote-ico">🏠</div><div>Si su servicio fue a <strong>domicilio</strong>, el cobro puede tardar un poco en registrarse.</div></div>'
+    : '<div class="flownote"><div class="flownote-ico">📱</div><div><strong>Importante:</strong> Si está consultando desde el celular móvil, al descargar el PDF debe consultar su carpeta de descargas.</div></div>'
+      +'<div class="flownote" style="margin-top:8px"><div class="flownote-ico">🏠</div><div>Si su servicio fue a <strong>domicilio</strong>, el cobro puede tardar un poco en registrarse.</div></div>';
+  document.getElementById('flowbody').innerHTML=
+    '<div class="flowscreentit">'+(isPaciente?'Datos de consulta':'Acceso convenio')+'</div>'
+    +'<div class="flowscreendesc">'+(isPaciente?'Ingrese el número de orden y clave que están en su comprobante de pago.':'Ingrese sus credenciales de convenio.')+'</div>'
+    +fields+notas;
+  document.getElementById('flowfootinfo').innerHTML='<div class="flowfoot-tot-c">Paso 3 de '+flowState.totalScreens+'</div><div class="flowfoot-tot-l" style="margin-top:2px">Credenciales</div>';
+  document.getElementById('flowsend').textContent='Continuar';
+  var ok=isPaciente?(flowState.orden&&flowState.clave):(flowState.usuario&&flowState.contrasena);
+  document.getElementById('flowsend').disabled=!ok;
+}
+function renderResumen(){
+  var isPaciente=flowState.tipo==='paciente';
+  document.getElementById('flowbody').innerHTML=
+    '<div class="flowscreentit">Revise y envíe</div>'
+    +'<div class="flowscreendesc">Verifique que la información sea correcta antes de consultar.</div>'
+    +'<div class="summbox">'
+    +'<div class="summsec"><div class="summlbl">Tipo de consulta</div><div class="summval">'+(isPaciente?'Paciente':'Convenio')+'</div></div>'
+    +'<div class="summsec"><div class="summlbl">Ciudad</div><div class="summval">'+flowState.ciudad+'</div></div>'
+    +'<div class="summsec"><div class="summlbl">'+(isPaciente?'Número de orden':'Usuario')+'</div><div class="summval">'+(isPaciente?flowState.orden:flowState.usuario)+'</div></div>'
+    +'<div class="summsec"><div class="summlbl">'+(isPaciente?'Clave':'Contraseña')+'</div><div class="summval">••••••••</div></div>'
+    +'</div>'
+    +'<div class="flownote"><div class="flownote-ico">⚡</div><div>Al confirmar, consultaremos sus resultados con el sistema Interlab y recibirá el PDF directamente en este chat.</div></div>';
+  document.getElementById('flowfootinfo').innerHTML='<div class="flowfoot-tot-c">Paso final</div><div class="flowfoot-tot-l" style="margin-top:2px">Consultar</div>';
+  document.getElementById('flowsend').textContent='Consultar resultados';
+  document.getElementById('flowsend').disabled=false;
+}
+
+function startDemo(){
+  stepIdx=0;
+  document.getElementById('intro').className='hide';
+  setTimeout(function(){document.getElementById('intro').style.display='none';},500);
+  document.getElementById('main').className='show';
+  fixH();
+  document.getElementById('chat').innerHTML='';
+  document.getElementById('nxtbtn').disabled=false;
+  document.getElementById('nxtbtn').textContent='▶ Siguiente paso';
+  setCtx('F2·Consulta de Resultados·automatizado');
+  setHint('▶ Presiona Siguiente paso para avanzar');
+}
+function nextStep(){
+  if(stepIdx>=STEPS.length){done();return;}
+  STEPS[stepIdx].fn();
+  stepIdx++;
+  scrollDn();
+  if(stepIdx>=STEPS.length){done();}
+}
+function restart(){startDemo();}
+function goIntro(){
+  document.getElementById('main').className='';
+  document.getElementById('intro').style.display='flex';
+  document.getElementById('intro').className='';
+}
+</script>
+</body>
+</html>
